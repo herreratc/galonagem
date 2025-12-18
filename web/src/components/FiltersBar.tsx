@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react'
-import { Filters, Filial, Produto } from '../types'
+import type { Filters, Filial, Produto } from '../types'
 
 interface FiltersBarProps {
   filters: Filters

@@ -4,7 +4,7 @@ import { FiltersBar } from '../components/FiltersBar'
 import { SalesTable } from '../components/SalesTable'
 import { SummaryCards } from '../components/SummaryCards'
 import { fetchFiliais, fetchProdutos, fetchVendas } from '../services/api'
-import { Filters, Filial, Produto, Venda } from '../types'
+import type { Filters, Filial, Produto, Venda } from '../types'
 
 function formatDate(input: Date) {
   return input.toISOString().slice(0, 10)

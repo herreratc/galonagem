@@ -1,4 +1,4 @@
-import { Filters, Filial, Produto, Venda } from '../types'
+import type { Filters, Filial, Produto, Venda } from '../types'
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '') || ''
 

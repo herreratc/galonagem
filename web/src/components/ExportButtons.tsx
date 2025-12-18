@@ -1,5 +1,5 @@
 import { utils, writeFile } from 'xlsx'
-import { Filters, Venda } from '../types'
+import type { Filters, Venda } from '../types'
 
 interface ExportButtonsProps {
   vendas: Venda[]
