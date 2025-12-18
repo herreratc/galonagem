@@ -51,6 +51,7 @@ Sobe a API (porta `PORT`, padrão 3001) e o frontend (porta 5173) em paralelo.
 ```
 npm run dev:server
 ```
+A API sobe na porta definida em `PORT` (padrão 3001) com CORS habilitado.
 
 ### Frontend isolado
 ```
