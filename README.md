@@ -1,73 +1,66 @@
-# React + TypeScript + Vite
+# Galonagem — Monitoramento de vendas de combustíveis
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação composta por uma API Node/Express e um frontend Vite + React para consultar vendas de combustíveis por dia, filtrar resultados e exportar dados em CSV ou XLSX.
 
-Currently, two official plugins are available:
+## Estrutura do projeto
+- `/server`: API em Node/Express que expõe os endpoints de filiais, produtos, vendas e healthcheck. Inclui script SQL para criação da view que simplifica as consultas.
+- `/web`: Aplicação React (Vite + TypeScript) que consome a API, exibe filtros, resumos e tabela de vendas com opções de exportação.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Pré-requisitos
+- Node.js 18+
+- Acesso a um SQL Server com o banco **ATXDADOS**
 
-## React Compiler
+## Configuração do banco
+1. Conecte-se ao SQL Server.
+2. Execute o script `server/sql/01_view_vendas.sql` para criar/atualizar a view `dbo.vw_Vendas_Combustiveis_Dia`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Variáveis de ambiente
+### API (`/server`)
+Crie um arquivo `.env` em `/server` a partir de `.env.example`:
+```
+SQLSERVER_HOST=localhost
+SQLSERVER_DB=ATXDADOS
+SQLSERVER_USER=your_user
+SQLSERVER_PASSWORD=your_password
+SQLSERVER_ENCRYPT=false
+SQLSERVER_TRUST_CERT=true
+PORT=3001
+```
+> Não committe credenciais reais.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Frontend (`/web`)
+Crie um arquivo `.env` em `/web` a partir de `.env.example` e configure a URL base da API:
+```
+VITE_API_BASE_URL=http://localhost:3001
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Instalação
+Na raiz do repositório, instale as dependências dos workspaces:
 ```
+npm install
+```
+
+## Execução
+### API
+```
+npm run dev:server
+```
+A API sobe na porta definida em `PORT` (padrão 3001) com CORS habilitado.
+
+### Frontend
+```
+npm run dev:web
+```
+A aplicação fica disponível em `http://localhost:5173` por padrão e consome a API via `VITE_API_BASE_URL`.
+
+## Endpoints principais
+- `GET /api/health`: status da API.
+- `GET /api/filiais`: lista de filiais ativas.
+- `GET /api/produtos?somenteCombustivel=1`: produtos ativos de combustíveis (`ID_LOCALVENDAS = 1`).
+- `GET /api/vendas?dataIni=YYYY-MM-DD&dataFim=YYYY-MM-DD&idFilial=...&idProduto=...`: retorna vendas diárias filtradas e ordenadas por data ascendente.
+
+## Funcionalidades do frontend
+- Filtros por período, filial e produto.
+- Resumo com volume total, valor total e ticket médio.
+- Tabela detalhada de vendas.
+- Exportação em CSV (no navegador) e XLSX (SheetJS) considerando os filtros aplicados.
