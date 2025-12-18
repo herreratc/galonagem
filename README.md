@@ -41,17 +41,23 @@ npm install
 ```
 
 ## Execução
-### API
+### API e Frontend juntos (um comando)
+```
+npm run dev
+```
+Sobe a API (porta `PORT`, padrão 3001) e o frontend (porta 5173) em paralelo.
+
+### API isolada
 ```
 npm run dev:server
 ```
 A API sobe na porta definida em `PORT` (padrão 3001) com CORS habilitado.
 
-### Frontend
+### Frontend isolado
 ```
 npm run dev:web
 ```
-A aplicação fica disponível em `http://localhost:5173` por padrão e consome a API via `VITE_API_BASE_URL`.
+A aplicação fica disponível em `http://localhost:5173` e consome a API via `VITE_API_BASE_URL`.
 
 ## Endpoints principais
 - `GET /api/health`: status da API.
