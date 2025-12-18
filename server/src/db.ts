@@ -1,7 +1,7 @@
-import sql from 'mssql'
+import sql, { ConnectionPool } from 'mssql'
 import { env } from './env.js'
 
-let poolPromise: Promise<sql.ConnectionPool> | null = null
+let poolPromise: Promise<ConnectionPool> | null = null
 
 export async function getPool() {
   if (!poolPromise) {

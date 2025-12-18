@@ -70,6 +70,16 @@ const vendasQuerySchema = z.object({
   idProduto: z.coerce.number().int().positive().optional(),
 })
 
+type VendasRow = {
+  ID_FILIAL: number
+  NOMEFILIAL: string
+  ID_PRODUTO: number
+  NOMEPRODUTO: string
+  DATA: Date | string
+  VOLUME_LITROS: number
+  VALOR_TOTAL_RS: number
+}
+
 app.get('/api/vendas', async (req, res, next) => {
   try {
     const { dataIni, dataFim, idFilial, idProduto } = vendasQuerySchema.parse(
@@ -87,7 +97,7 @@ app.get('/api/vendas', async (req, res, next) => {
     request.input('idFilial', sql.Int, idFilial ?? null)
     request.input('idProduto', sql.Int, idProduto ?? null)
 
-    const result = await request.query(`
+    const result = await request.query<VendasRow>(`
       SELECT
         f.ID_FILIAL AS ID_FILIAL,
         f.RAZAOSOCIALFILIAL AS NOMEFILIAL,
