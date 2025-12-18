@@ -1,4 +1,4 @@
-import { Venda } from '../types'
+import type { Venda } from '../types'
 
 interface SalesTableProps {
   vendas: Venda[]
