@@ -12,7 +12,7 @@ Aplicação composta por uma API Node/Express e um frontend Vite + React para co
 
 ## Configuração do banco
 1. Conecte-se ao SQL Server.
-2. Execute o script `server/sql/01_view_vendas.sql` para criar/atualizar a view `dbo.vw_Vendas_Combustiveis_Dia`.
+2. A API usa um `SELECT` com agregação diretamente nas tabelas `LMCBICOS`, `LMC`, `PRODUTOS` e `FILIAIS` (não é necessária view). O script em `server/sql/01_view_vendas.sql` pode ser usado opcionalmente, mas não é obrigatório.
 
 ## Variáveis de ambiente
 ### API (`/server`)

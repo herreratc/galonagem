@@ -88,12 +88,30 @@ app.get('/api/vendas', async (req, res, next) => {
     request.input('idProduto', sql.Int, idProduto ?? null)
 
     const result = await request.query(`
-      SELECT *
-      FROM dbo.vw_Vendas_Combustiveis_Dia
-      WHERE ( @dataIni IS NULL OR DATA >= @dataIni )
-        AND ( @dataFim IS NULL OR DATA <= @dataFim )
-        AND ( @idFilial IS NULL OR ID_FILIAL = @idFilial )
-        AND ( @idProduto IS NULL OR ID_PRODUTO = @idProduto )
+      SELECT
+        f.ID_FILIAL AS ID_FILIAL,
+        f.RAZAOSOCIALFILIAL AS NOMEFILIAL,
+        p.ID_PRODUTOS AS ID_PRODUTO,
+        p.NOMEPRODUTO AS NOMEPRODUTO,
+        CONVERT(date, l.DTACONTA) AS DATA,
+        CAST(SUM(ISNULL(b.VENDAS, 0)) AS decimal(18,3)) AS VOLUME_LITROS,
+        CAST(SUM(ISNULL(b.VENDAS, 0) * ISNULL(b.PPL, 0)) AS decimal(18,2)) AS VALOR_TOTAL_RS
+      FROM dbo.LMCBICOS b
+      INNER JOIN dbo.LMC l ON l.ID_LMC = b.ID_LMC
+      INNER JOIN dbo.PRODUTOS p ON p.ID_PRODUTOS = l.ID_PRODUTOS
+      INNER JOIN dbo.FILIAIS f ON f.ID_FILIAL = l.ID_FILIAL
+      WHERE p.ATIVO = 1
+        AND p.ID_LOCALVENDAS = 1
+        AND ( @dataIni IS NULL OR CONVERT(date, l.DTACONTA) >= @dataIni )
+        AND ( @dataFim IS NULL OR CONVERT(date, l.DTACONTA) <= @dataFim )
+        AND ( @idFilial IS NULL OR f.ID_FILIAL = @idFilial )
+        AND ( @idProduto IS NULL OR p.ID_PRODUTOS = @idProduto )
+      GROUP BY
+        f.ID_FILIAL,
+        f.RAZAOSOCIALFILIAL,
+        p.ID_PRODUTOS,
+        p.NOMEPRODUTO,
+        CONVERT(date, l.DTACONTA)
       ORDER BY DATA, NOMEFILIAL, NOMEPRODUTO;
     `)
 
